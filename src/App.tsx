@@ -1,4 +1,5 @@
 import React from 'react';
+import BackTop from './components/Backtop';
 import Gallery from './components/Gallery';
 import Nav from './components/Nav';
 
@@ -8,6 +9,7 @@ function App() {
     <div className="App">
       <Nav />
       <Gallery />
+      <BackTop />
     </div>
   );
 }

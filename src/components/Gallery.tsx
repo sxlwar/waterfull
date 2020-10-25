@@ -1,13 +1,14 @@
 import { createStyles, makeStyles } from '@material-ui/core';
-import React, { useEffect, useRef, useState } from 'react';
-import InfiniteScroll from 'react-infinite-scroll-component';
-import { Observable } from 'rxjs';
-import { Hit } from '../model';
-import apiService from '../service/api.service';
-import { LazyImage } from 'react-lazy-images';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import VisibilityOutlinedIcon from '@material-ui/icons/VisibilityOutlined';
 import uniqby from 'lodash.uniqby';
+import React, { useEffect, useRef, useState } from 'react';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import { LazyImage } from 'react-lazy-images';
+import { Observable } from 'rxjs';
+import { Hit } from '../model';
+import apiService from '../service/api.service';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -66,7 +67,12 @@ export function Gallery(): JSX.Element {
         setPage(page + 1);
       }}
       hasMore={hasMore}
-      loader={<h3 className="fixed bottom-0">Loading...</h3>}
+      loader={
+        <CircularProgress
+          className="fixed bottom-0 py-4"
+          style={{ left: '50%', transform: 'translateX(-50%)' }}
+        />
+      }
       dataLength={data.length}
       className={'flex flex-wrap px-16 bg-blue-200 pt-2' + styles.root}
     >
@@ -90,7 +96,11 @@ export function Gallery(): JSX.Element {
               )}
               actual={({ imageProps }) => (
                 <>
-                  <img src={item.largeImageURL} {...imageProps} alt={imageProps.alt} />
+                  <img
+                    src={item.largeImageURL}
+                    {...imageProps}
+                    alt={imageProps.alt}
+                  />
                   <ImageInfo hit={item} />
                 </>
               )}
@@ -113,7 +123,11 @@ function ImageInfo({ hit }: ImageInfoProps) {
       style={{ backgroundColor: 'rgba(0, 0, 0, .2)' }}
     >
       <div className="flex items-center gap-1">
-        <img src={hit.userImageURL} className="rounded-2xl h-8" alt={hit.tags} />
+        <img
+          src={hit.userImageURL}
+          className="rounded-2xl h-8"
+          alt={hit.tags}
+        />
         <i className="whitespace-no-wrap">{hit.user}</i>
       </div>
       <div className="flex items-center text-xs gap-1">
