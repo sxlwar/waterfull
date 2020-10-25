@@ -3,20 +3,28 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^4.11.0",
+    "@material-ui/icons": "^4.9.1",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "@types/jest": "^24.9.1",
     "@types/node": "^12.19.1",
-    "@types/react": "^16.9.53",
     "@types/react-dom": "^16.9.8",
+    "lodash.uniqby": "^4.7.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-infinite-scroll-component": "^5.1.0",
+    "react-lazy-images": "^1.1.0",
     "react-scripts": "3.4.4",
+    "react-window": "^1.8.5",
+    "rxjs": "^6.6.3",
+    "tailwindcss": "^1.9.6",
     "typescript": "^3.7.5"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "build:style": "tailwind build src/styles/index.css -o src/styles/tailwind.css",
+    "start": "npm run build:style && react-scripts start --no-cache",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -35,5 +43,12 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/lodash.uniqby": "^4.7.6",
+    "@types/react-infinite-scroll-component": "^4.2.5",
+    "autoprefixer": "^10.0.1",
+    "postcss-cli": "^8.1.0",
+    "prettier": "^2.1.2"
   }
 }
