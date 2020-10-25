@@ -1,14 +1,14 @@
 import { createStyles, makeStyles } from '@material-ui/core';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import VisibilityOutlinedIcon from '@material-ui/icons/VisibilityOutlined';
 import uniqby from 'lodash.uniqby';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { LazyImage } from 'react-lazy-images';
 import { Observable } from 'rxjs';
 import { Hit } from '../model';
 import apiService from '../service/api.service';
-import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -21,6 +21,11 @@ const useStyles = makeStyles((theme) =>
   })
 );
 
+/**
+ * @function  useObservable -custom hooks
+ * @param observable - source observable
+ * @description Subscribe value from the target observable.
+ */
 function useObservable<T>(observable: Observable<T>): T {
   const [state, setState] = useState(null);
 
@@ -32,13 +37,13 @@ function useObservable<T>(observable: Observable<T>): T {
   return state;
 }
 
-export function Gallery(): JSX.Element {
+function Gallery(): JSX.Element {
   const [data, setData] = useState<Hit[]>([]);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [page, setPage] = useState<number>(1);
-  const styles = useStyles();
+  const [visibleInfoId, setVisibleId] = useState<number>(null);
   const query = useObservable(apiService.queryObs);
-  const ref = useRef<HTMLDivElement>();
+  const styles = useStyles();
 
   useEffect(() => {
     setPage(1);
@@ -76,17 +81,18 @@ export function Gallery(): JSX.Element {
       dataLength={data.length}
       className={'flex flex-wrap px-16 bg-blue-200 pt-2' + styles.root}
     >
-      {data.map((item, index) => {
+      {data.map((item) => {
         const width = (item.imageWidth * 200) / item.imageHeight;
         const padding = (item.imageHeight / item.imageWidth) * 100 + '%';
         const key = item.id + item.user;
 
         return (
           <div
-            className="relative m-1 bg-gray-400"
+            className="relative m-1 bg-gray-400 overflow-hidden"
             style={{ width, flexGrow: width }}
             key={key}
-            ref={ref}
+            onMouseEnter={() => setVisibleId(item.id)}
+            onMouseLeave={() => setVisibleId(null)}
           >
             <i style={{ paddingBottom: padding }}></i>
             <LazyImage
@@ -101,7 +107,7 @@ export function Gallery(): JSX.Element {
                     {...imageProps}
                     alt={imageProps.alt}
                   />
-                  <ImageInfo hit={item} />
+                  <ImageInfo hit={item} visibleId={visibleInfoId} />
                 </>
               )}
             />
@@ -114,13 +120,19 @@ export function Gallery(): JSX.Element {
 
 interface ImageInfoProps {
   hit: Hit;
+  visibleId: number;
 }
 
-function ImageInfo({ hit }: ImageInfoProps) {
+function ImageInfo({ hit, visibleId }: ImageInfoProps) {
+  const isVisible = visibleId === hit.id;
+
   return (
     <div
-      className="absolute bottom-0 flex flex-wrap justify-between text-gray-300 p-2 opacity-0 hover:opacity-100 transition-opacity duration-300 ease-in-out w-full"
-      style={{ backgroundColor: 'rgba(0, 0, 0, .2)' }}
+      className="absolute flex flex-wrap justify-between text-gray-300 p-2 transition-all duration-500 ease-in-out w-full"
+      style={{
+        backgroundColor: 'rgba(0, 0, 0, .2)',
+        bottom: isVisible ? 0 : '-100%'
+      }}
     >
       <div className="flex items-center gap-1">
         <img

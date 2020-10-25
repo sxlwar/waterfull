@@ -7,7 +7,7 @@ const useStyles = makeStyles((theme) =>
     root: {
       position: 'fixed',
       bottom: '40px',
-      right: '10px',
+      right: '18px',
       color: theme.palette.secondary.light,
       fontSize: '3em',
       opacity: 0.3,
@@ -30,7 +30,6 @@ export default function BackTop() {
   useEffect(() => {
     const listener = () => {
       const visible = window.scrollY > 300;
-      console.log(window.scrollY);
 
       setVisible(visible);
     };
